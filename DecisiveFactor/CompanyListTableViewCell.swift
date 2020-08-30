@@ -10,15 +10,25 @@ import UIKit
 
 class CompanyListTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var industry: UILabel!
+    @IBOutlet weak var companyName: UILabel!
+    @IBOutlet weak var ShadowView: UIView!
+
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+       
     }
+    
+    func setCell(company: CompayListData) {
+           self.companyName.text = company.companyName as String
+        self.industry.text = company.industry as String
+            
+       }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+  
     }
     
+   
 }

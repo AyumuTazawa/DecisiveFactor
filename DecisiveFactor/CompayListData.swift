@@ -7,3 +7,17 @@
 //
 
 import Foundation
+import Firebase
+
+class CompayListData {
+  let companyName: String
+  let industry: String
+ 
+
+  init(data: [String: Any]) {
+    
+   companyName = data["companyName"] as! String
+   industry = data["industry"] as! String
+    
+  }
+}
