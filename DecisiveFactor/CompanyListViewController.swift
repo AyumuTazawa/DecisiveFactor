@@ -130,4 +130,9 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
         self.present(actionSheet, animated: true, completion: nil)
     }
     
+    @IBAction func TransitionAddCompanyData(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "companyDataAddViewController")
+        UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
+    }
 }
