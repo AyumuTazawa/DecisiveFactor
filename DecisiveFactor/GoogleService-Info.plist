@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>794466506951-qkgpl2i349sm0uv02hv7pmklqeug2scu.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.794466506951-qkgpl2i349sm0uv02hv7pmklqeug2scu</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCEuzd9YHkC9prDKvTyjebbm3K3Pi3DJ1o</string>
+	<key>GCM_SENDER_ID</key>
+	<string>794466506951</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>net.ayumutazawa.DecisiveFactor</string>
+	<key>PROJECT_ID</key>
+	<string>decisivefactor-1007c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>decisivefactor-1007c.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:794466506951:ios:7d3993ab010c17063406e2</string>
+	<key>DATABASE_URL</key>
+	<string>https://decisivefactor-1007c.firebaseio.com</string>
+</dict>
+</plist>
