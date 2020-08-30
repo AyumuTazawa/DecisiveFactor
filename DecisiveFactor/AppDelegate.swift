@@ -20,30 +20,9 @@ var window: UIWindow?
         // Override point for customization after application launch.
         
         FirebaseApp.configure()
-        GIDSignIn.sharedInstance()?.clientID = "794466506951-qkgpl2i349sm0uv02hv7pmklqeug2scu.apps.googleusercontent.com"
+        //ログイン
+        GIDSignIn.sharedInstance()?.clientID = ""
         
-        /*ログインを判断
-        let ud = UserDefaults.standard
-        let isLogin = ud.bool(forKey: "isLogin")
-        if isLogin == true {
-            //ログイン中だったら
-            self.window = UIWindow(frame: UIScreen.main.bounds)
-            let storyBorad = UIStoryboard(name: "Main", bundle: Bundle.main)
-            let roodViewContorollre = storyBorad.instantiateViewController(withIdentifier: "rootCompanyListContoroller")
-            self.window?.rootViewController = roodViewContorollre
-            self.window?.backgroundColor = UIColor.white
-            self.window?.makeKeyAndVisible()
-            
-        } else {
-            //ログインしていなかったら
-            self.window = UIWindow(frame: UIScreen.main.bounds)
-            let storyBorad = UIStoryboard(name: "SignInStoryboard", bundle: Bundle.main)
-            let roodViewContorollre = storyBorad.instantiateViewController(withIdentifier: "SignInViewContoroller")
-            self.window?.rootViewController = roodViewContorollre
-            self.window?.backgroundColor = UIColor.white
-            self.window?.makeKeyAndVisible()
-            
-        }*/
         
         return true
     }
