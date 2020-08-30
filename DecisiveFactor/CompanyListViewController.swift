@@ -98,4 +98,36 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
     }
     }
     
+    @IBAction func LogOut(_ sender: Any) {
+    
+    //アクションシートを作る
+        let actionSheet = UIAlertController(title: "ログアウト", message: "したのボタンから選択してください", preferredStyle: .actionSheet)
+       
+        let action1 = UIAlertAction(title: "ログアウト", style: UIAlertAction.Style.default, handler: {
+            (action: UIAlertAction!) in
+            
+            let firebaseAuth = Auth.auth()
+            do {
+              try firebaseAuth.signOut()
+                let storyboard = UIStoryboard(name: "SignInStoryboard", bundle: Bundle.main)
+                let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "SignInViewContoroller")
+                UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
+            } catch let signOutError as NSError {
+              print ("Error signing out: %@", signOutError)
+            }
+            print("ログアウト完了")
+        })
+    
+        let close = UIAlertAction(title: "閉じる", style: UIAlertAction.Style.destructive, handler: {
+            (action: UIAlertAction!) in
+           
+            print("閉じる")
+        })
+
+        actionSheet.addAction(action1)
+        actionSheet.addAction(close)
+        
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
 }
