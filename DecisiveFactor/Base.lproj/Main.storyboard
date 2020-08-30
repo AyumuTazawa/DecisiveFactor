@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="KCm-wx-2xP">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -24,7 +24,13 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" id="gzz-o4-Nfp"/>
+                    <navigationItem key="navigationItem" id="gzz-o4-Nfp">
+                        <barButtonItem key="leftBarButtonItem" systemItem="action" id="dS0-3w-ckb">
+                            <connections>
+                                <action selector="LogOut:" destination="BYZ-38-t0r" id="Zug-Zs-CjH"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="companyList" destination="OQq-3w-vy5" id="AXg-dX-GLo"/>
                         <segue destination="20U-We-Asm" kind="show" identifier="toDetail" id="8MC-Ir-1R0"/>
@@ -65,7 +71,7 @@
         <!--Navigation Controller-->
         <scene sceneID="Baw-M3-lbS">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="KCm-wx-2xP" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="rootCompanyListContoroller" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="KCm-wx-2xP" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="NXy-du-75Q">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
