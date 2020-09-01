@@ -12,12 +12,12 @@ import Firebase
 class CompayListData {
   let companyName: String
   let industry: String
- 
+  let postId: String
 
   init(data: [String: Any]) {
     
    companyName = data["companyName"] as! String
    industry = data["industry"] as! String
-    
+   postId = data["postID"]as! String
   }
 }
