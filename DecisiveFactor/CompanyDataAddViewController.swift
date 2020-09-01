@@ -10,15 +10,15 @@ import UIKit
 import Firebase
 
 class CompanyDataAddViewController: UIViewController, UITextFieldDelegate {
-
- 
+    
+    
     @IBOutlet weak var addCompanyNameTextField: UITextField!
     @IBOutlet weak var addIndustryTextField: UITextField!
     var database: Firestore!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         database = Firestore.firestore()
         addIndustryTextField.delegate = self
         addCompanyNameTextField.delegate = self
@@ -29,9 +29,9 @@ class CompanyDataAddViewController: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         addCompanyNameTextField.resignFirstResponder()
         addIndustryTextField.resignFirstResponder()
-            return true
-        }
-   
+        return true
+    }
+    
     
     @IBAction func returnRootCompanyListContoroller(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
@@ -42,8 +42,8 @@ class CompanyDataAddViewController: UIViewController, UITextFieldDelegate {
     @IBAction func addCompanyData(_ sender: Any) {
         let addcompanyname = addCompanyNameTextField.text!
         let addindustry = addIndustryTextField.text!
-        let companyData = ["companyName": addcompanyname, "industry": addindustry]
-        Firestore.firestore().collection("Companies").document().setData(companyData) { (error) in
+        let saveCompanyData = Firestore.firestore().collection("Companies").document()
+        saveCompanyData.setData(["companyName": addcompanyname, "industry": addindustry, "postID": saveCompanyData.documentID]) { (error) in
             if let error = error {
                 print("Companydataの追加に失敗しました")
             } else {
@@ -53,8 +53,9 @@ class CompanyDataAddViewController: UIViewController, UITextFieldDelegate {
                 UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
             }
         }
+        
     }
-    
-    
- 
 }
+
+
+
