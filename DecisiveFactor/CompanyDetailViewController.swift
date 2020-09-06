@@ -8,20 +8,28 @@
 
 import UIKit
 import Firebase
+import Nuke
 
 class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
    
-     @IBOutlet weak var reviewList: UITableView!
-     var revirwArray: [ReviewData] = []
-     var database: Firestore!
+    var database: Firestore!
+    var revirwArray: [ReviewData] = []
     var selectedCompany: CompayListData!
+    
+    @IBOutlet weak var reviewList: UITableView!
     @IBOutlet weak var CompanyNameLabel: UILabel!
+    @IBOutlet weak var companyOvreviewTextView: UITextView!
+    @IBOutlet weak var companyImageImageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        companyImageImageView.layer.cornerRadius = 34
         self.CompanyNameLabel.text = selectedCompany.companyName
-        
+        self.companyOvreviewTextView.text = selectedCompany.overview
+        if let url = URL(string: selectedCompany.companyImageUrl ?? "" ) {
+        Nuke.loadImage(with: url, into: self.companyImageImageView)
+            
+        }
         reviewList.dataSource = self
                reviewList.delegate = self
                reviewList.register(UINib(nibName: "ReviewTableViewCell", bundle: nil), forCellReuseIdentifier: "reviewCell")
@@ -30,7 +38,7 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
     
     override func viewWillAppear(_ animated: Bool) {
         let companyuid = self.selectedCompany.postId
-        database.collection("Companies").document(companyuid).collection("Reviews").addSnapshotListener { (snapshots, err) in
+        database.collection("companies").document(companyuid).collection("Reviews").addSnapshotListener { (snapshots, err) in
            if err == nil, let snapshots = snapshots {
                         self.revirwArray = []
                      print(snapshots.documents)
@@ -50,7 +58,7 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 70
+        return 100
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
