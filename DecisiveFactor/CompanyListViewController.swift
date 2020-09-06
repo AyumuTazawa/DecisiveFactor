@@ -8,33 +8,28 @@
 
 import UIKit
 import Firebase
+import Nuke
 
 class CompanyListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    
-    
+    var database: Firestore!
+    var selectedText: String?
+    var postArray: [CompayListData] = []
     
     @IBOutlet weak var companyList: UITableView!
-    var database: Firestore!
-    var postArray: [CompayListData] = []
-    var selectedText: String?
-    
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        companyList.dataSource = self
-        companyList.delegate = self
-        companyList.register(UINib(nibName: "CompanyListTableViewCell", bundle: nil), forCellReuseIdentifier: "CompanyListCell")
-        // 初期値代入
         database = Firestore.firestore()
+        companyList.delegate = self
+        companyList.dataSource = self
+        companyList.register(UINib(nibName: "CompanyListTableViewCell", bundle: nil), forCellReuseIdentifier: "CompanyListCell")
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        database.collection("Companies").getDocuments { (snapshot, err) in
+        database.collection("companies").getDocuments { (snapshot, err) in
             if err == nil, let snapshot = snapshot {
                 self.postArray = []
                 print(snapshot.documents)
@@ -57,7 +52,7 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        return 200
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
