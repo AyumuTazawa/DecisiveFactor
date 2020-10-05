@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import PromiseKit
 
 class CompanyDataAddViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -17,6 +18,8 @@ class CompanyDataAddViewController: UIViewController, UITextFieldDelegate, UIIma
     @IBOutlet weak var addIndustryTextField: UITextField!
     @IBOutlet weak var addOverviewTextView: UITextView!
     @IBOutlet weak var pickImageView: UIImageView!
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,43 +52,62 @@ class CompanyDataAddViewController: UIViewController, UITextFieldDelegate, UIIma
     }
     
     @IBAction func addCompanyData(_ sender: Any) {
-        let storage = Storage.storage()
-        let refrrence = storage.reference(forURL: "gs://decisivefactor-1007c.appspot.com")
-        guard let companyImage = pickImageView.image else { return }
-        guard let upimage = companyImage.jpegData(compressionQuality: 0.3) else { return }
-        let imageName = NSUUID().uuidString
-        let storegeRef = Storage.storage().reference().child("companyImage").child(imageName)
-        storegeRef.putData(upimage, metadata: nil) { (metadata, err) in
-            if let err = err {
-                print("Firestorageへの追加に失敗しました")
-            } else {
-                print("Firesotrageへの追加に成功しました")
-                storegeRef.downloadURL { (url, err) in
-                    if let err = err {
-                        print("Firestorへの追加に失敗しました")
-                    } else {
-                        
-                        let addcompanyname = self.addCompanyNameTextField.text!
-                        let addindustry = self.addIndustryTextField.text!
-                        let addoverview = self.addOverviewTextView.text!
-                        guard let addcompanyImageUrl = url?.absoluteString else { return }
-                        let saveCompanyData = Firestore.firestore().collection("companies").document()
-                        saveCompanyData.setData(["companyName": addcompanyname, "industry": addindustry, "overview": addoverview, "postID": saveCompanyData.documentID, "companyImageUrl": addcompanyImageUrl]) { (error) in
-                            if let error = error {
-                                print("Companydataの追加に失敗しました")
-                            } else {
-                                print("Companydataの追加に成功しました")
-                                let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-                                let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "rootCompanyListContoroller")
-                                UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
-                            }
+        addImage().done { addcompanyImageUrl in
+            print(addcompanyImageUrl)
+            let getaddcompanyImageUrl = addcompanyImageUrl
+            //self.addCompanyData(getaddcompanyImageUrl: getaddcompanyImageUrl)
+            self.addCompany(getaddcompanyImageUrl: getaddcompanyImageUrl)
+            self.toViewcontoroller()
+            }.catch { err in
+            print(err)
+       
+        }
+    }
+    
+    func addImage() -> Promise<Any> {
+        return Promise { resolver in
+            let storage = Storage.storage()
+            let refrrence = storage.reference(forURL: "gs://decisivefactor-1007c.appspot.com")
+            guard let companyImage = pickImageView.image else { return }
+            guard let upimage = companyImage.jpegData(compressionQuality: 0.3) else { return }
+            let imageName = NSUUID().uuidString
+            let storegeRef = Storage.storage().reference().child("companyImage").child(imageName)
+            storegeRef.putData(upimage, metadata: nil) { (metadata, err) in
+                if let err = err {
+                    resolver.reject(err)
+                } else {
+                    storegeRef.downloadURL { (url, err) in
+                        if let err = err {
+                            print("Firestorへの追加に失敗しました")
+                        } else {
+                            guard let addcompanyImageUrl = url?.absoluteString else { return }
+                            resolver.fulfill(addcompanyImageUrl)
                         }
+                        
                     }
                 }
             }
         }
-        
     }
+    
+    func addCompany(getaddcompanyImageUrl: Any) -> Promise<Void> {
+        return Promise { resolver in
+            let addcompanyname = self.addCompanyNameTextField.text!
+            let addindustry = self.addIndustryTextField.text!
+            let addoverview = self.addOverviewTextView.text!
+            let saveCompanyData = Firestore.firestore().collection("companies").document()
+            saveCompanyData.setData(["companyName": addcompanyname, "industry": addindustry, "overview": addoverview, "postID": saveCompanyData.documentID, "companyImageUrl": getaddcompanyImageUrl])
+    }
+    }
+    
+    func toViewcontoroller() -> Promise<Void> {
+         return Promise { resolver in
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "rootCompanyListContoroller")
+        UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
+    }
+    }
+    
     
     // 画像が選択された時に呼ばれる
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any])  {
@@ -102,5 +124,44 @@ class CompanyDataAddViewController: UIViewController, UITextFieldDelegate, UIIma
     }
 }
 
+//};addCompanyData(getaddcompanyImageUrl: getaddcompanyImageUrl) {
+ // let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+// let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "rootCompanyListContoroller")
+ // UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
 
-
+/*
+let storage = Storage.storage()
+let refrrence = storage.reference(forURL: "gs://decisivefactor-1007c.appspot.com")
+guard let companyImage = pickImageView.image else { return }
+guard let upimage = companyImage.jpegData(compressionQuality: 0.3) else { return }
+let imageName = NSUUID().uuidString
+let storegeRef = Storage.storage().reference().child("companyImage").child(imageName)
+storegeRef.putData(upimage, metadata: nil) { (metadata, err) in
+    if let err = err {
+        print("Firestorageへの追加に失敗しました")
+    } else {
+        print("Firesotrageへの追加に成功しました")
+        storegeRef.downloadURL { (url, err) in
+            if let err = err {
+                print("Firestorへの追加に失敗しました")
+            } else {
+                
+                let addcompanyname = self.addCompanyNameTextField.text!
+                let addindustry = self.addIndustryTextField.text!
+                let addoverview = self.addOverviewTextView.text!
+                guard let addcompanyImageUrl = url?.absoluteString else { return }
+                let saveCompanyData = Firestore.firestore().collection("companies").document()
+                saveCompanyData.setData(["companyName": addcompanyname, "industry": addindustry, "overview": addoverview, "postID": saveCompanyData.documentID, "companyImageUrl": addcompanyImageUrl]) { (error) in
+                    if let error = error {
+                        print("Companydataの追加に失敗しました")
+                    } else {
+                        print("Companydataの追加に成功しました")
+                        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+                        let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "rootCompanyListContoroller")
+                        UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
+                    }
+                }
+            }
+        }
+    }
+ }*/
