@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import Nuke
+import PromiseKit
 
 class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
    
@@ -31,31 +32,43 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
             
         }
         reviewList.dataSource = self
-               reviewList.delegate = self
-               reviewList.register(UINib(nibName: "ReviewTableViewCell", bundle: nil), forCellReuseIdentifier: "reviewCell")
-               database = Firestore.firestore()
+        reviewList.delegate = self
+        reviewList.register(UINib(nibName: "ReviewTableViewCell", bundle: nil), forCellReuseIdentifier: "reviewCell")
+        database = Firestore.firestore()
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let companyuid = self.selectedCompany.postId
-        database.collection("companies").document(companyuid).collection("Reviews").addSnapshotListener { (snapshots, err) in
-           if err == nil, let snapshots = snapshots {
-                        self.revirwArray = []
-                     print(snapshots.documents)
-                        for document in snapshots.documents {
-                            print("成功しました")
-                            print(document.data())
-                            
-                            let data = document.data()
-                            let post = ReviewData(rdata: data)
-                            self.revirwArray.append(post)
-                    
-                            self.reviewList.reloadData()
-                         
-                    }
+        
+        self.fostReviewData()
+        
+    }
+    
+    func fostReviewData() {
+        fechReviewData().done { reviewPost in
+            self.revirwArray = reviewPost
+            self.reviewList.reloadData()
+        }.catch { err in
+            print(err)
+        }
+    }
+    
+    
+    func fechReviewData() -> Promise<[ReviewData]> {
+        return Promise { resolver in
+            let companyuid = self.selectedCompany.postId
+            database.collection("companies").document(companyuid).collection("Reviews").addSnapshotListener { (snapshots, err) in
+                if let err = err {
+                    resolver.reject(err)
+                }
+                if let snapshots = snapshots {
+                    print(snapshots.documents)
+                    let reviewPost = snapshots.documents.map {ReviewData(rdata: $0.data())}
+                    resolver.fulfill(reviewPost)
                 }
             }
+        }
     }
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
