@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import Nuke
+import PromiseKit
 
 class CompanyListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -29,25 +30,36 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        database.collection("companies").getDocuments { (snapshot, err) in
-            if err == nil, let snapshot = snapshot {
-                self.postArray = []
-                print(snapshot.documents)
-                for document in snapshot.documents {
-                    print("成功しました")
-                    print(document.data())
-                    
-                    let data = document.data()
-                    let post = CompayListData(data: data)
-                    self.postArray.append(post)
-                    
-                    self.companyList.reloadData()
-                    
+        
+        self.fostCompanyListData()
+        
+    }
+    
+    func fostCompanyListData() {
+        fetchData().done { post in
+            self.postArray = post
+            self.companyList.reloadData()
+        }.catch { err in
+            print(err)
+        }
+    }
+    
+    func fetchData() -> Promise<[CompayListData]> {
+        return Promise { resolver in
+            database.collection("companies").getDocuments { (snapshot, err) in
+                if let err = err {
+                    resolver.reject(err)
+                }
+                if let snapshot = snapshot {
+                    print(snapshot.documents)
+                    let post = snapshot.documents.map {CompayListData(data: $0.data())}
+                    resolver.fulfill(post)
                 }
             }
         }
         
     }
+    
     
     
     
