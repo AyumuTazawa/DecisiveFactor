@@ -10,10 +10,10 @@ import Foundation
 import Firebase
 
 class UserData {
+    
   let name: String
   let email: String
  
-
   init(udata: [String: Any]) {
     
    name = udata["name"] as! String
