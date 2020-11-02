@@ -8,27 +8,22 @@
 
 import UIKit
 import Firebase
+import PromiseKit
 
 class AddReviewsViewController: UIViewController, UITextViewDelegate {
     
+    var database: Firestore!
+    var selectedCompanyData: CompayListData!
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var addReviewsTextView: UITextView!
     
-    var database: Firestore!
-    var selectedCompanyData: CompayListData!
-   
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         database = Firestore.firestore()
         addReviewsTextView.delegate = self
         self.name.text = selectedCompanyData.companyName
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-       
-       
+        
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -37,38 +32,44 @@ class AddReviewsViewController: UIViewController, UITextViewDelegate {
     }
     
     @IBAction func addReviews(_ sender: Any) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-            
-            database.collection("users").document(uid).getDocument { (DocumentSnapshot, err) in
-                if let err = err {
-                    print("ユーザーデータの取得に失敗しました")
-                    
-                } else {
-                    guard let data = DocumentSnapshot?.data() else { return }
-                    let Udata = UserData.init(udata: data)
-                    print("ユーザーのデータの取得に成功しました\(Udata.name)")
-                    let writeReview = self.addReviewsTextView.text!
-                    let writeUser = Udata.name
-                    let addreview = ["review": writeReview, "weiteUser": writeUser]
-                    let companyId = self.selectedCompanyData.postId
-                    Firestore.firestore().collection("Companies").document(companyId).collection("Reviews").document().setData(addreview) { (err) in
-                        if let err = err {
-                            print("レビューの追加に失敗しました")
-                        } else {
-                            print("レビューの追加に成功しました")
-                        }
-                        
-                    }
-                }
-            
+        firstly {
+            self.fechUserData()
+        }.done { Udata in
+            self.upReviewData(userData: Udata)
+        }.catch { err in
+            print(err)
         }
-     
-     
-    
-        
-        
     }
     
+    func fechUserData() -> Promise<UserData> {
+        return Promise { resolver in
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            database.collection("users").document(uid).getDocument { (documentSnapshot, err) in
+                if let err = err {
+                    print(err)
+                } else {
+                    guard let data = documentSnapshot?.data() else { return }
+                    let Udata = UserData.init(udata: data)
+                    resolver.fulfill(Udata)
+                }
+            }
+        }
+    }
     
-
+    func upReviewData(userData: UserData) -> Promise<Void> {
+        return Promise { resolver in
+            let writeReview = self.addReviewsTextView.text!
+            let writeUser = userData.name
+            let companyId = self.selectedCompanyData.postId
+            let addreview = ["review": writeReview, "weiteUser": writeUser, "companyId": companyId]
+            Firestore.firestore().collection("Reviews").document().setData(addreview) { (err) in
+                if let err = err {
+                    print(err)
+                } else {
+                    resolver.fulfill(())
+                }
+            }
+        }
+    }
+    
 }
