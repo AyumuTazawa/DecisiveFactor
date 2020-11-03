@@ -60,8 +60,9 @@ class AddReviewsViewController: UIViewController, UITextViewDelegate {
         return Promise { resolver in
             let writeReview = self.addReviewsTextView.text!
             let writeUser = userData.name
+            let writeUserId = userData.userId
             let companyId = self.selectedCompanyData.postId
-            let addreview = ["review": writeReview, "weiteUser": writeUser, "companyId": companyId]
+            let addreview = ["review": writeReview, "writeUser": writeUser,"writeUserId": writeUserId, "companyId": companyId]
             Firestore.firestore().collection("Reviews").document().setData(addreview) { (err) in
                 if let err = err {
                     print(err)
