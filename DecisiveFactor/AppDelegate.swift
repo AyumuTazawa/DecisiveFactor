@@ -20,9 +20,7 @@ var window: UIWindow?
         // Override point for customization after application launch.
         
         FirebaseApp.configure()
-        //ログイン
-        GIDSignIn.sharedInstance()?.clientID = ""
-        
+        GIDSignIn.sharedInstance()?.clientID = "794466506951-qkgpl2i349sm0uv02hv7pmklqeug2scu.apps.googleusercontent.com"
         
         return true
     }
