@@ -16,7 +16,6 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
     var database: Firestore!
     var selectedText: String?
     var postArray: [CompayListData] = []
-    
     @IBOutlet weak var companyList: UITableView!
     
     override func viewDidLoad() {
@@ -36,7 +35,7 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func fostCompanyListData() {
-        fetchData().done { post in
+        fetchCompanyListData().done { post in
             self.postArray = post
             self.companyList.reloadData()
         }.catch { err in
@@ -44,7 +43,7 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func fetchData() -> Promise<[CompayListData]> {
+    func fetchCompanyListData() -> Promise<[CompayListData]> {
         return Promise { resolver in
             database.collection("companies").getDocuments { (snapshot, err) in
                 if let err = err {
@@ -57,11 +56,7 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
                 }
             }
         }
-        
     }
-    
-    
-    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 200
@@ -70,9 +65,11 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.postArray.count
     }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CompanyListCell", for: indexPath) as! CompanyListTableViewCell
         cell.setCell(company: postArray[indexPath.row])
@@ -84,36 +81,28 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
         cell.layer.cornerRadius = 8
         cell.clipsToBounds = true
         
-        
         return cell
     }
-    
-    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "toDetail",sender: nil)
         // セルの選択を解除
         tableView.deselectRow(at: indexPath, animated: true)
-        
     }
     
     //値を渡す
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         if segue.identifier == "toDetail" {
             //次の画面の取得
             let detailViewContorollre = segue.destination as! CompanyDetailViewController
             let selectedIndex = companyList.indexPathForSelectedRow!
             detailViewContorollre.selectedCompany = postArray[selectedIndex.row]
-            
         }
     }
     
     @IBAction func LogOut(_ sender: Any) {
-        
         //アクションシートを作る
         let actionSheet = UIAlertController(title: "ログアウト", message: "したのボタンから選択してください", preferredStyle: .actionSheet)
-        
         let action1 = UIAlertAction(title: "ログアウト", style: UIAlertAction.Style.default, handler: {
             (action: UIAlertAction!) in
             
