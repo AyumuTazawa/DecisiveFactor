@@ -11,13 +11,15 @@ import Firebase
 
 class UserData {
     
-  let name: String
-  let email: String
+    let name: String
+    let email: String
+    let userId: String
  
   init(udata: [String: Any]) {
     
-   name = udata["name"] as! String
-   email = udata["email"] as! String
+    name = udata["name"] as! String
+    email = udata["email"] as! String
+    userId = udata["userId"] as! String
     
-  }
+    }
 }

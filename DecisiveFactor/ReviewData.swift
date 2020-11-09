@@ -10,14 +10,20 @@ import Foundation
 import Firebase
 
 class ReviewData {
-  let review: String
-  let weiteUser: String
- 
+    
+    let review: String
+    let writeUser: String
+    let writeUserId: String
+    let companyId: String
+    let reviewId: String
 
   init(rdata: [String: Any]) {
     
-  review = rdata["review"] as! String
-   weiteUser = rdata["weiteUser"] as! String
+    review = rdata["review"] as! String
+    writeUser = rdata["writeUser"] as! String
+    writeUserId = rdata["writeUserId"] as! String
+    companyId = rdata["companyId"] as! String
+    reviewId = rdata["reviewId"] as! String
     
   }
 }
