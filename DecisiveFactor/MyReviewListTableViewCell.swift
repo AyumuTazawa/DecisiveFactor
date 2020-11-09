@@ -23,4 +23,5 @@ class MyReviewListTableViewCell: UITableViewCell {
      func setCell(myReviewData: ReviewData) {
         self.myReview.text = myReviewData.review as String
     }
+    
 }
