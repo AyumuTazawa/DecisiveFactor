@@ -9,9 +9,8 @@
 import UIKit
 
 class ReviewTableViewCell: UITableViewCell {
-
-    //@IBOutlet weak var companyReviewTextView: UITextView!
-    @IBOutlet weak var companyReviewTextLabel: UILabel!
+    
+    @IBOutlet weak var companyReviewTextView: UITextView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -19,13 +18,13 @@ class ReviewTableViewCell: UITableViewCell {
     }
     
     func setCell(rdata: ReviewData) {
-        self.companyReviewTextLabel.text = rdata.review as String
+        self.companyReviewTextView.text = rdata.review as String
         
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
+        
         // Configure the view for the selected state
     }
     
