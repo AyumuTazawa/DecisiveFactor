@@ -29,12 +29,13 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
         self.companyOvreviewTextView.text = selectedCompany.overview
         if let url = URL(string: selectedCompany.companyImageUrl ?? "" ) {
             Nuke.loadImage(with: url, into: self.companyImageImageView)
-            
         }
+        
         reviewList.dataSource = self
         reviewList.delegate = self
         reviewList.register(UINib(nibName: "ReviewTableViewCell", bundle: nil), forCellReuseIdentifier: "reviewCell")
         database = Firestore.firestore()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -51,21 +52,20 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
             print(err)
         }.finally {
             self.reviewList.reloadData()
-            
         }
+        
     }
     
     func fechReview() -> Promise<[ReviewData]> {
         return Promise { resolver in
             let companyId = self.selectedCompany.postId
-            Firestore.firestore().collection("Reviews").whereField("companyId", isEqualTo: companyId).getDocuments { (snapshot,err) in
+            Firestore.firestore().collection("reviews").whereField("companyId", isEqualTo: companyId).getDocuments { (snapshot,err) in
                 if let err = err {
                     print(err)
                 }
                 if let snapshot = snapshot {
                     print(snapshot.documents)
-                    let reviewPost = snapshot.documents.map {ReviewData(rdata: $0.data())
-                    }
+                    let reviewPost = snapshot.documents.map {ReviewData(rdata: $0.data())}
                     resolver.fulfill(reviewPost)
                 }
             }
