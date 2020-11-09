@@ -15,11 +15,11 @@ class UserData {
     let email: String
     let userId: String
  
-  init(udata: [String: Any]) {
+  init(userData: [String: Any]) {
     
-    name = udata["name"] as! String
-    email = udata["email"] as! String
-    userId = udata["userId"] as! String
+    name = userData["name"] as! String
+    email = userData["email"] as! String
+    userId = userData["userId"] as! String
     
     }
 }
