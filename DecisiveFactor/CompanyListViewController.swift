@@ -16,6 +16,7 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
     var database: Firestore!
     var selectedText: String?
     var postArray: [CompayListData] = []
+    private let refreshContorol = UIRefreshControl()
     @IBOutlet weak var companyList: UITableView!
     
     override func viewDidLoad() {
@@ -25,9 +26,10 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
         companyList.delegate = self
         companyList.dataSource = self
         companyList.register(UINib(nibName: "CompanyListTableViewCell", bundle: nil), forCellReuseIdentifier: "CompanyListCell")
+        companyList.refreshControl = refreshContorol
+        refreshContorol.addTarget(self, action: #selector(CompanyListViewController.refresh(sender:)), for: .valueChanged)
         
     }
-    
     override func viewWillAppear(_ animated: Bool) {
         
         self.fostCompanyListData()
@@ -56,6 +58,47 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
                 }
             }
         }
+    }
+    
+    @IBAction func LogOut(_ sender: Any) {
+        //アクションシートを作る
+        let actionSheet = UIAlertController(title: "ログアウト", message: "したのボタンから選択してください", preferredStyle: .actionSheet)
+        let action1 = UIAlertAction(title: "ログアウト", style: UIAlertAction.Style.default, handler: {
+            (action: UIAlertAction!) in
+            
+            let firebaseAuth = Auth.auth()
+            do {
+                try firebaseAuth.signOut()
+                let storyboard = UIStoryboard(name: "SignInStoryboard", bundle: Bundle.main)
+                let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "SignInViewContoroller")
+                UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
+            } catch let signOutError as NSError {
+                print ("Error signing out: %@", signOutError)
+            }
+            print("ログアウト完了")
+        })
+        
+        let close = UIAlertAction(title: "閉じる", style: UIAlertAction.Style.destructive, handler: {
+            (action: UIAlertAction!) in
+            print("閉じる")
+        })
+        
+        actionSheet.addAction(action1)
+        actionSheet.addAction(close)
+        
+        self.present(actionSheet, animated: true, completion: nil)
+    }
+    
+    @IBAction func TransitionAddCompanyData(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "companyDataAddViewController")
+        UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
+    }
+    
+    //紙に引っ張ってTableViewを更新
+    @objc func refresh(sender: UIRefreshControl) {
+        self.fostCompanyListData()
+        refreshContorol.endRefreshing()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -100,39 +143,4 @@ class CompanyListViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    @IBAction func LogOut(_ sender: Any) {
-        //アクションシートを作る
-        let actionSheet = UIAlertController(title: "ログアウト", message: "したのボタンから選択してください", preferredStyle: .actionSheet)
-        let action1 = UIAlertAction(title: "ログアウト", style: UIAlertAction.Style.default, handler: {
-            (action: UIAlertAction!) in
-            
-            let firebaseAuth = Auth.auth()
-            do {
-                try firebaseAuth.signOut()
-                let storyboard = UIStoryboard(name: "SignInStoryboard", bundle: Bundle.main)
-                let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "SignInViewContoroller")
-                UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
-            } catch let signOutError as NSError {
-                print ("Error signing out: %@", signOutError)
-            }
-            print("ログアウト完了")
-        })
-        
-        let close = UIAlertAction(title: "閉じる", style: UIAlertAction.Style.destructive, handler: {
-            (action: UIAlertAction!) in
-            
-            print("閉じる")
-        })
-        
-        actionSheet.addAction(action1)
-        actionSheet.addAction(close)
-        
-        self.present(actionSheet, animated: true, completion: nil)
-    }
-    
-    @IBAction func TransitionAddCompanyData(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "companyDataAddViewController")
-        UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
-    }
 }
