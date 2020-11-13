@@ -16,6 +16,7 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
     var database: Firestore!
     var revirwArray: [ReviewData] = []
     var selectedCompany: CompayListData!
+    private let refreshContorol = UIRefreshControl()
     
     @IBOutlet weak var reviewList: UITableView!
     @IBOutlet weak var CompanyNameLabel: UILabel!
@@ -31,10 +32,12 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
             Nuke.loadImage(with: url, into: self.companyImageImageView)
         }
         
+        database = Firestore.firestore()
         reviewList.dataSource = self
         reviewList.delegate = self
         reviewList.register(UINib(nibName: "ReviewTableViewCell", bundle: nil), forCellReuseIdentifier: "reviewCell")
-        database = Firestore.firestore()
+        reviewList.refreshControl = refreshContorol
+        refreshContorol.addTarget(self, action: #selector(CompanyDetailViewController.refresh(sender:)), for: .valueChanged)
         
     }
     
@@ -45,7 +48,6 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func fostReviewData() {
-        
         self.fechReview().done { reviewPost in
             self.revirwArray = reviewPost
         }.catch { err in
@@ -53,7 +55,6 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
         }.finally {
             self.reviewList.reloadData()
         }
-        
     }
     
     func fechReview() -> Promise<[ReviewData]> {
@@ -70,6 +71,12 @@ class CompanyDetailViewController: UIViewController, UITableViewDelegate, UITabl
                 }
             }
         }
+    }
+    
+    //上に引っ張ってTableViewを更新
+    @objc func refresh(sender: UIRefreshControl) {
+        self.fostReviewData()
+        refreshContorol.endRefreshing()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
