@@ -26,12 +26,8 @@ class SignInViewController: UIViewController, GIDSignInDelegate {
     }
     
     @IBAction func googleAction(_ sender: Any) {
-        
         GIDSignIn.sharedInstance()?.signIn()
-        
     }
-    
-    
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
         let authentication = user.authentication
@@ -56,11 +52,8 @@ class SignInViewController: UIViewController, GIDSignInDelegate {
                     let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
                     let rootViewContoroller = storyboard.instantiateViewController(withIdentifier: "rootCompanyListContoroller")
                     UIApplication.shared.keyWindow?.rootViewController = rootViewContoroller
-                    
                 }
-                
             }
-            
         }
     }
     

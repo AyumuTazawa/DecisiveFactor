@@ -95,7 +95,13 @@ class CompanyDataAddViewController: UIViewController, UITextFieldDelegate, UIIma
             let addoverview = self.addOverviewTextView.text!
             let saveCompanyData = Firestore.firestore().collection("companies").document()
             let postId = saveCompanyData.documentID
-            saveCompanyData.setData(["companyName": addcompanyname, "industry": addindustry, "overview": addoverview, "postID": postId, "companyImageUrl": getaddcompanyImageUrl])
+            saveCompanyData.setData(["companyName": addcompanyname, "industry": addindustry, "overview": addoverview, "postID": postId, "companyImageUrl": getaddcompanyImageUrl]) { (err) in
+                if let err = err {
+                    print(err)
+                } else {
+                    resolver.fulfill(())
+                }
+            }
         }
     }
     
