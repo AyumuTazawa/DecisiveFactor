@@ -16,7 +16,7 @@ class CompayListData {
   let postId: String
   let companyImageUrl: String
     
-  init(data: [String: Any]) {
+  init(data: [String:Any]) {
     
    companyName = data["companyName"] as! String
    industry = data["industry"] as! String
