@@ -49,7 +49,7 @@ class AddReviewsViewController: UIViewController, UITextViewDelegate {
                     print(err)
                 } else {
                     guard let data = documentSnapshot?.data() else { return }
-                    let writeUserData = UserData.init(udata: data)
+                    let writeUserData = UserData.init(userData: data)
                     resolver.fulfill(writeUserData)
                 }
             }
